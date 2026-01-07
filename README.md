@@ -1,6 +1,10 @@
 
 # Igbo Language Model Training with AWS SageMaker
 
+> **📖 New to this project?** Start with [INDEX.md](INDEX.md) for complete navigation and documentation structure.
+
+---
+
 Train a world-class Igbo-English translation model using Meta's NLLB dataset and AWS SageMaker.
 
 ## 📋 Overview
@@ -258,6 +262,19 @@ gradient_accumulation_steps = 16  # Instead of 8
 ## 📄 License
 
 MIT License - See LICENSE file for details
+
+## 📚 Complete Documentation
+
+This README provides a quick overview. For comprehensive step-by-step guides:
+
+- **[INDEX.md](INDEX.md)** - Complete documentation index with navigation
+- **[MEMORY_OPTIMIZATION_CHANGES.md](MEMORY_OPTIMIZATION_CHANGES.md)** - Critical OOM fixes
+- **[docs/](docs/)** - Detailed guides for each phase:
+  - [01-setup.md](docs/01-setup.md) - AWS setup (30-60 min)
+  - [02-data-preparation.md](docs/02-data-preparation.md) - Data prep (2-3 hours)
+  - [03-sagemaker-training.md](docs/03-sagemaker-training.md) - Training (7-8 days)
+  - [04-monitoring.md](docs/04-monitoring.md) - Monitoring tools
+  - [05-deployment.md](docs/05-deployment.md) - Deployment options
 
 ## 🙏 Acknowledgments
 
