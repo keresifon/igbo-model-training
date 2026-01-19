@@ -35,17 +35,15 @@ Monitor training progress through:
 - **Billable time:** Actual training time (excludes setup)
 - **Training time:** Total time including setup
 - **Instance type:** ml.g5.xlarge
-- **Spot interruptions:** Number of times interrupted
+
 
 ### Cost Tracking
 
 ```
-Current cost = (Billable seconds / 3600) × $0.42
+Current cost = (Billable seconds / 3600) × $1.41
 ```
 
-**Example:**
-- After 24 hours: 86,400 seconds = $10.08
-- After 7 days: 604,800 seconds = $70.56
+
 
 ---
 

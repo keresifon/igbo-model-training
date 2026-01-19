@@ -10,9 +10,8 @@ New AWS accounts have 0 quota for GPU instances. You must request increases.
 
 | Quota | Value | Approval Time |
 |-------|-------|---------------|
-| ml.g5.xlarge for spot training | 1 instance | 24-48 hours |
 | ml.g5.xlarge for training | 1 instance | 24-48 hours |
-| Longest run time for training | 432,000 seconds | Instant |
+| Longest run time for training | 604800 seconds | Instant |
 
 ### Request Process
 
@@ -21,7 +20,7 @@ New AWS accounts have 0 quota for GPU instances. You must request increases.
 
 2. **Select Region:** us-east-1 (top right)
 
-3. **Search for quota:** `ml.g5.xlarge for spot training job usage`
+3. **Search for quota:** `ml.g5.xlarge for training job usage`
 
 4. **Click on it**
 
@@ -33,7 +32,7 @@ New AWS accounts have 0 quota for GPU instances. You must request increases.
 
 7. **Submit request**
 
-8. **Repeat for:** `ml.g5.xlarge for training job usage`
+
 
 ### Check Approval Status
 
@@ -137,35 +136,10 @@ SageMaker needs permissions to access S3 and other AWS services.
 - Lowercase letters, numbers, hyphens
 - No underscores or spaces
 
----
-
-## Step 4: Set Up Budget Alerts (Recommended)
-
-Protect yourself from unexpected costs.
-
-### Create Budget
-
-1. **Go to Billing Console:**
-   https://console.aws.amazon.com/billing/home#/budgets
-
-2. **Click "Create budget"**
-
-3. **Select:** Cost budget
-
-4. **Configure:**
-   - Name: `SageMaker Training Budget`
-   - Amount: `$100`
-   - Period: Monthly
-
-5. **Add alert:**
-   - Threshold: 80% ($80)
-   - Email: your-email@example.com
-
-6. **Create budget**
 
 ---
 
-## Step 5: Set Up SageMaker Domain (For Studio)
+## Step 4: Set Up SageMaker Domain (For Studio)
 
 If using SageMaker Studio notebooks:
 
@@ -196,7 +170,7 @@ If using SageMaker Studio notebooks:
 
 ---
 
-## Step 6: Verify Setup
+## Step 5: Verify Setup
 
 **Check in AWS Console:**
 
@@ -240,22 +214,7 @@ If using SageMaker Studio notebooks:
 
 ---
 
-## Security Best Practices
 
-1. **Enable MFA** on root account
-2. **Create IAM user** (don't use root)
-3. **Rotate access keys** regularly
-4. **Use least privilege** IAM policies
-5. **Enable CloudTrail** for auditing
-6. **Review billing** monthly
-
-## Cost Optimization Tips
-
-1. **Use spot instances** (70% discount)
-2. **Stop jobs** when not needed
-3. **Delete old data** from S3
-4. **Set budget alerts**
-5. **Use lifecycle policies** for S3
 
 ## Next Steps
 

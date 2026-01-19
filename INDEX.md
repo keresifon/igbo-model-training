@@ -16,8 +16,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - AWS CLI installation
 - Service quota requests (ml.g5.xlarge spot instances)
 - IAM role configuration
-- S3 bucket setup
-- Budget alerts
+- S3 bucket setups
 - SageMaker Domain creation
 
 #### 02. Data Preparation (2-3 hours)
@@ -34,9 +33,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - Training script setup
 - Hyperparameter configuration
 - Launching training jobs
-- Spot instance configuration
 - Checkpoint management
-- Cost optimization ($70-85 total)
 - Troubleshooting OOM errors
 
 #### 04. Monitoring (Daily checks)
@@ -55,7 +52,6 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - Local deployment with Ollama
 - Model conversion (PyTorch → GGUF)
 - Quantization (14GB → 4GB)
-- iOS app integration
 - Cloud deployment options
 - Performance optimization
 

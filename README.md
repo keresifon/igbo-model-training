@@ -130,14 +130,7 @@ aws s3 cp s3://your-bucket-name/models/igbo-llm/[job-name]/output/model.tar.gz .
 tar -xzf model.tar.gz
 ```
 
-## 💰 Cost Breakdown
 
-| Item | Cost |
-|------|------|
-| SageMaker Training (spot) | $63-76 |
-| S3 Storage (5GB) | $0.50/month |
-| Data Transfer | $0.10 (one-time) |
-| **Total First Run** | **~$70-80** |
 
 ## 📊 Training Configuration
 
@@ -163,7 +156,7 @@ max_length = 512 tokens
 # Hardware
 instance_type = ml.g5.xlarge
 gpu = NVIDIA A10G (24GB VRAM)
-spot_instances = True (70% discount)
+
 ```
 
 ## 🎓 Dataset Information
@@ -245,11 +238,6 @@ per_device_train_batch_size = 1  # Instead of 2
 gradient_accumulation_steps = 16  # Instead of 8
 ```
 
-### Issue: Spot Instance Interrupted
-
-**Problem:** AWS reclaimed spot instance
-
-**Solution:** Training automatically resumes from last checkpoint (no action needed)
 
 ## 📚 Additional Resources
 

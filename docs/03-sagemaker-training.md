@@ -10,9 +10,8 @@ We'll train Mistral-7B-v0.1 using LoRA (Low-Rank Adaptation) on AWS SageMaker wi
 - Model: Mistral-7B-v0.1 (7 billion parameters)
 - Method: LoRA fine-tuning (trains ~40M parameters)
 - Instance: ml.g5.xlarge (NVIDIA A10G, 24GB VRAM)
-- Pricing: Spot instances (70% discount)
 - Duration: 165-200 hours (~7-8 days)
-- Cost: $70-85
+
 
 ---
 
@@ -63,7 +62,7 @@ See `scripts/train_igbo_model.py`:
    - Name it: `igbo-train.ipynb`
    - Wait for kernel to start
 
-   **Reference:** See the complete notebook in `scripts/igbo-train.ipynb` in this repository.
+   **Reference:** See the complete notebook in `scripts/igbo-train-ondemand.ipynb` in this repository.
 
 **3. Upload Training Script:**
    - In Studio file browser (left sidebar)
@@ -125,48 +124,6 @@ The complete working notebook is available at `scripts/igbo-train.ipynb`.
 ---
 
 
-## Training Timeline
-
-### Expected Progress
-
-| Time | Progress | Cost | Status |
-|------|----------|------|--------|
-| 0-5 min | 0% | $0 | Starting, downloading data |
-| 5-10 min | 0% | $0.03 | Model loading, LoRA setup |
-| 10 min-1 hour | 0.5% | $0.35 | Training begins, first checkpoints |
-| 1-24 hours | 15% | $10 | Epoch 1 in progress |
-| 24-72 hours | 45% | $30 | Epoch 2 in progress |
-| 72-120 hours | 75% | $50 | Epoch 3 in progress |
-| 120-180 hours | 95% | $70 | Final training, saving model |
-| 180 hours | 100% | $75 | Complete! Model ready |
-
-### Checkpoints
-
-Checkpoints saved every 1000 steps (~30-45 minutes):
-
-```
-s3://your-bucket/checkpoints/job-name/
-├── checkpoint-1000/
-├── checkpoint-2000/
-├── checkpoint-3000/
-└── ...
-```
-
----
-
-## Handling Spot Interruptions
-
-### Automatic Resume
-
-If spot instance is interrupted:
-1. Training pauses automatically
-2. Last checkpoint is preserved in S3
-3. New spot instance provisions
-4. Training resumes from last checkpoint
-5. **No action required from you!**
-
-
-
 
 ## Troubleshooting
 
@@ -194,10 +151,7 @@ torch.cuda.OutOfMemoryError: CUDA out of memory
 gradient_checkpointing=True
 ```
 
-4. **Upgrade instance:**
-```python
-instance_type='ml.g5.2xlarge'  # 48GB VRAM, $0.84/hr spot
-```
+
 
 
 ### Issue: Training Stuck/Slow

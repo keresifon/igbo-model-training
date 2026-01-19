@@ -223,7 +223,6 @@ s3://learn-igbo-ekpes-useast1/datasets/nllb/
 
 ---
 
-## Storage Costs
 
 ### S3 Standard Storage
 
@@ -232,6 +231,7 @@ s3://learn-igbo-ekpes-useast1/datasets/nllb/
 | Training data | 4.9 GB | $0.11 |
 | Validation data | 24.5 MB | $0.00 |
 | **Total** | **~5 GB** | **~$0.12/month** |
+## Storage Costs
 
 **Cost calculation:** $0.023 per GB/month in us-east-1
 
