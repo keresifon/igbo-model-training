@@ -30,11 +30,23 @@ This project fine-tunes Mistral 7B on 6.1 million Igbo-English sentence pairs us
 - Provide offline translation capabilities
 - Support iOS app integration for OCR and translation
 
+## ⭐ Featured Files
+
+Key files to get started:
+
+- **[scripts/train_igbo_model.py](scripts/train_igbo_model.py)** - Main SageMaker training script with LoRA fine-tuning
+- **[scripts/igbo-train.ipynb](scripts/igbo-train.ipynb)** - Jupyter notebook for launching training jobs
+- **[scripts/prepare_nllb_training.py](scripts/prepare_nllb_training.py)** - Data preparation script for NLLB dataset
+- **[docs/03-sagemaker-training.md](docs/03-sagemaker-training.md)** - Complete training guide with hyperparameters
+- **[docs/05-deployment.md](docs/05-deployment.md)** - Deployment guide for Mac Mini M2 with Ollama
+- **[MEMORY_OPTIMIZATION_CHANGES.md](MEMORY_OPTIMIZATION_CHANGES.md)** - Critical fixes for OOM errors
+
 ## 📁 Repository Structure
 
 ```
 igbo-llm-training/
 ├── README.md                           # This file
+├── LICENSE                             # MIT License
 ├── docs/
 │   ├── 01-setup.md                     # AWS account and quota setup
 │   ├── 02-data-preparation.md          # Dataset download and preparation
@@ -46,6 +58,7 @@ igbo-llm-training/
 │   ├── igbo-train.ipynb                # Jupyter notebook for launching training
 │   ├── prepare_nllb_training.py        # Prepare training data (reference)
 │   └── (other utility scripts)
+├── datasets/                           # Processed datasets
 ├── requirements.txt                    # Python dependencies
 └── .gitignore                          # Git ignore file
 ```
@@ -159,6 +172,25 @@ gpu = NVIDIA A10G (24GB VRAM)
 
 ```
 
+## ☁️ AWS Services
+
+This project uses the following AWS services:
+
+| Service | Purpose | Configuration |
+|---------|---------|---------------|
+| **SageMaker Training** | Model training on GPU instances | ml.g5.xlarge (NVIDIA A10G, 24GB VRAM) |
+| **S3** | Data storage and model artifacts | ~5GB training data, ~80MB model output |
+| **CloudWatch** | Training logs and metrics | Automatic logging, custom metrics |
+| **IAM** | Access control and permissions | SageMaker execution role with S3 access |
+| **Service Quotas** | Resource limits management | ml.g5.xlarge quota request required |
+
+**Cost Optimization:**
+- Uses spot instances (70% cost savings)
+- Efficient LoRA training (only 0.12% parameters trainable)
+- Total training cost: ~$70-80 for 6-7 days
+
+For detailed AWS setup instructions, see [docs/01-setup.md](docs/01-setup.md).
+
 ## 🎓 Dataset Information
 
 **NLLB (No Language Left Behind)**
@@ -167,6 +199,7 @@ gpu = NVIDIA A10G (24GB VRAM)
 - Languages: Igbo (ig) ↔ English (en)
 - Quality: Professional translations
 - Domain: Diverse (news, literature, technical, conversational)
+- License: ODC Attribution License (ODC-By)
 
 **Training Format (4 examples per pair):**
 1. Direct translation: Igbo → English
@@ -239,6 +272,47 @@ gradient_accumulation_steps = 16  # Instead of 8
 ```
 
 
+## 🤝 Ethics & Responsible AI
+
+### Purpose & Use Cases
+This model is designed for **educational and language preservation purposes**:
+- Teaching Igbo language to children and learners
+- Preserving Igbo cultural heritage through technology
+- Enabling offline translation for communities with limited internet access
+- Supporting academic research in African languages
+
+### Limitations & Considerations
+
+**Data Quality:**
+- Model quality depends on the NLLB dataset, which may contain biases or errors
+- Translations may not capture all cultural nuances or regional variations
+- Professional review recommended for critical translations
+
+**Bias & Fairness:**
+- The model reflects patterns in the training data
+- May perpetuate existing biases in the source dataset
+- Should not be used for automated decision-making without human oversight
+
+**Privacy:**
+- Model does not store or transmit user input data
+- Local deployment option ensures data privacy
+- No user data is collected or shared
+
+**Responsible Deployment:**
+- ✅ Use for educational and language learning purposes
+- ✅ Use for personal translation assistance
+- ✅ Use for cultural preservation initiatives
+- ❌ Do not use for automated content moderation
+- ❌ Do not use for critical medical or legal translations without human review
+- ❌ Do not use to replace human translators in sensitive contexts
+
+### Attribution
+- **Dataset:** NLLB (Meta AI) - ODC Attribution License
+- **Base Model:** Mistral-7B-v0.1 (Mistral AI) - Apache 2.0
+- **Training Infrastructure:** AWS SageMaker
+
+We acknowledge and respect the contributions of the Igbo language community and the organizations that made this project possible.
+
 ## 📚 Additional Resources
 
 - [AWS SageMaker Documentation](https://docs.aws.amazon.com/sagemaker/)
@@ -249,7 +323,9 @@ gradient_accumulation_steps = 16  # Instead of 8
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details.
+
+**Note:** The NLLB dataset is licensed under ODC Attribution License (ODC-By). The base Mistral-7B model is licensed under Apache 2.0.
 
 ## 📚 Complete Documentation
 
