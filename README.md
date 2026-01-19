@@ -28,7 +28,7 @@ This project fine-tunes Mistral 7B on 6.1 million Igbo-English sentence pairs us
 - Create a high-quality Igbo language model for educational purposes
 - Enable Igbo language learning for children
 - Provide offline translation capabilities
-- Support iOS app integration for OCR and translation
+- Support mobile app integration for OCR and translation
 
 ## ⭐ Featured Files
 

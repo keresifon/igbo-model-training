@@ -178,8 +178,7 @@ For comparison, cloud deployment options:
 1. ✅ Convert model to GGUF format
 2. ✅ Set up Ollama on Mac Mini
 3. ✅ Test translations
-4. ✅ Integrate into iOS app
-5. ✅ Start teaching Igbo! 🇳🇬
+4. ✅ Start teaching Igbo! 🇳🇬
 
 ---
 

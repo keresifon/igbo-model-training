@@ -104,8 +104,7 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 1. ✅ Train production-quality Igbo-English translation model
 2. ✅ Use cost-effective cloud infrastructure (AWS spot instances)
 3. ✅ Deploy locally on Mac Mini (16GB RAM)
-4. ✅ Integrate into iOS app for language learning
-5. ✅ Preserve and promote Igbo language 🇳🇬
+4. ✅ Preserve and promote Igbo language 🇳🇬
 
 ---
 
@@ -162,7 +161,6 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 - Ollama (local inference)
 - llama.cpp (GGUF conversion)
 - GGUF quantization (Q4_K_M, Q5_K_M)
-- Swift (iOS integration)
 
 ---
 
@@ -243,13 +241,7 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
    - Speed: 20-30 tokens/second
    - Works great for personal use
 
-2. **iOS Deployment**
-   - Requires iPhone 12+ (4GB+ RAM)
-   - Model size: ~4GB (quantized)
-   - On-device or server-based options
-   - Speed: 10-20 tokens/second
-
-3. **Cloud Deployment**
+2. **Cloud Deployment**
    - SageMaker: $1,016/month (24/7)
    - Lambda: $10-50/month (sporadic)
    - Choose based on usage volume
@@ -355,7 +347,6 @@ MIT License - See LICENSE file
 - [x] Documentation written
 - [ ] Training in progress (7-8 days remaining)
 - [ ] Model evaluation (pending)
-- [ ] iOS app integration (pending)
 - [ ] Production deployment (pending)
 
 ---
@@ -369,7 +360,6 @@ MIT License - See LICENSE file
 | Jan 13-14, 2026 | Training completes |
 | Jan 15, 2026 | Model evaluation |
 | Jan 16-17, 2026 | Local deployment setup |
-| Jan 18+, 2026 | iOS app integration |
 
 ---
 

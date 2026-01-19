@@ -16,7 +16,7 @@ All files are ready to upload to your GitHub repository!
 5. **docs/02-data-preparation.md** - NLLB download, processing, S3 upload (2-3 hours)
 6. **docs/03-sagemaker-training.md** - Training launch, monitoring, troubleshooting (7-8 days)
 7. **docs/04-monitoring.md** - CloudWatch, metrics, real-time tracking
-8. **docs/05-deployment.md** - Ollama, GGUF, iOS, cloud deployment
+8. **docs/05-deployment.md** - Ollama, GGUF, cloud deployment
 
 ### Training Script
 
@@ -175,7 +175,6 @@ git push origin main
 - [x] GGUF conversion
 - [x] Quantization guide
 - [x] Ollama setup
-- [x] iOS integration
 - [x] Cloud options
 - [x] API examples
 
@@ -195,7 +194,6 @@ git push origin main
 
 ### 3. **Multiple Deployment Options**
 - Local (Mac Mini)
-- iOS (on-device or server)
 - Cloud (SageMaker, Lambda, HuggingFace)
 
 ### 4. **Cost Optimized**
@@ -280,7 +278,7 @@ Your repository will help others:
 3. **Deploy LLMs locally**
    - GGUF conversion
    - Quantization
-   - Mac/iOS integration
+   - Mac integration
 
 4. **Preserve minority languages**
    - Igbo example
@@ -314,7 +312,6 @@ Once training completes:
 
 2. **Create demo video**
    - Show Ollama in action
-   - iOS app integration
    - Translation quality
 
 3. **Write blog post**
@@ -357,15 +354,13 @@ Once training completes:
 ### While Training (7-8 days):
 1. ⏳ Monitor training progress
 2. ⏳ Prepare deployment environment
-3. ⏳ Design iOS app UI
-4. ⏳ Write blog post draft
+3. ⏳ Write blog post draft
 
 ### After Training:
 1. 📋 Evaluate model quality
 2. 📋 Convert to GGUF
 3. 📋 Deploy locally
-4. 📋 Integrate into iOS app
-5. 📋 Share results!
+4. 📋 Share results!
 
 ---
 
