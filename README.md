@@ -337,6 +337,35 @@ ollama run igbo-teacher "Translate to Igbo: Hello, how are you?"
 per_device_train_batch_size = 1  # Instead of 2
 gradient_accumulation_steps = 16  # Instead of 8
 ```
+### Issue: Checkpoints Not Syncing During Training
+
+**Problem:** Training completes but only first checkpoint preserved
+
+**Root Cause:** Mismatch between checkpoint save location and S3 sync configuration
+
+**Symptoms:**
+- Training runs successfully for hours/days
+- CloudWatch shows "CHECKPOINT SAVED" messages
+- Only checkpoint-1000 or checkpoint-5000 appears in S3
+- Later checkpoints missing
+
+**Solution:**
+```python
+# In training script (train_igbo_model_FIXED.py):
+training_args = TrainingArguments(
+    output_dir="/opt/ml/output/data",  # Use this, not /opt/ml/checkpoints
+    save_strategy="steps",
+    save_steps=5000,
+    save_total_limit=None,  # CRITICAL: Don't delete old checkpoints!
+    # Checkpoints will upload to S3 when training completes
+)
+Prevention:
+
+Use save_total_limit=None to preserve all checkpoints
+Add checkpoint validation callback (see train_igbo_model_FIXED.py)
+Test checkpoint saving in first 30 minutes of training
+Verify checkpoint upload to S3 after job completion
+Reference: See docs/LESSONS_LEARNED.md for complete analysis
 
 
 ## 🤝 Ethics & Responsible AI
