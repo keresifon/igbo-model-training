@@ -80,7 +80,7 @@ This project represents complete production-scale ML engineering experience:
 
 Key files to get started:
 
-- **[scripts/train_igbo_model.py](scripts/train_igbo_model.py)** - Main SageMaker training script with LoRA fine-tuning
+- **[scripts/train_igbo_model_FIXED.py](scripts/train_igbo_model_FIXED.py)** - Main SageMaker training script with LoRA fine-tuning
 - **[scripts/igbo-train.ipynb](scripts/igbo-train.ipynb)** - Jupyter notebook for launching training jobs
 - **[scripts/prepare_nllb_training.py](scripts/prepare_nllb_training.py)** - Data preparation script for NLLB dataset
 - **[docs/03-sagemaker-training.md](docs/03-sagemaker-training.md)** - Complete training guide with hyperparameters
