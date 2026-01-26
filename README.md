@@ -362,11 +362,12 @@ training_args = TrainingArguments(
 ```
 Prevention:
 
-Use save_total_limit=None to preserve all checkpoints
-Add checkpoint validation callback (see train_igbo_model_FIXED.py)
-Test checkpoint saving in first 30 minutes of training
-Verify checkpoint upload to S3 after job completion
-Reference: See docs/LESSONS_LEARNED.md for complete analysis
+1. Use save_total_limit=None to preserve all checkpoints
+2. Add checkpoint validation callback (see train_igbo_model_FIXED.py)
+3. Test checkpoint saving in first 30 minutes of training
+4. Verify checkpoint upload to S3 after job completion
+
+Reference: See [docs/LESSONS_LEARNED.md](docs/LESSONS_LEARNED.md) for complete analysis
 
 
 ## 🤝 Ethics & Responsible AI
