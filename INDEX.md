@@ -15,7 +15,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 ### Step-by-Step Guides
 
 #### 01. Setup (30-60 minutes)
-**docs/01-setup.md**
+**[docs/01-setup.md](docs/01-setup.md)** 
 - AWS account creation
 - AWS CLI installation
 - Service quota requests (ml.g5.xlarge instances)
@@ -24,7 +24,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - SageMaker Domain creation
 
 #### 02. Data Preparation (2-3 hours)
-**docs/02-data-preparation.md**
+**[docs/02-data-preparation.md](docs/02-data-preparation.md)**
 - Downloading NLLB dataset (6.1M sentence pairs)
 - Data verification and alignment checking
 - Creating bidirectional training format (19.5M examples)
@@ -33,15 +33,15 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - Storage cost optimization
 
 #### 03. SageMaker Training (7 days)
-**docs/03-sagemaker-training.md**
+**[docs/03-sagemaker-training.md](docs/03-sagemaker-training.md)**
 - Training script setup
 - Hyperparameter configuration
 - Launching training jobs
-- Checkpoint management (CRITICAL - see LESSONS_LEARNED.md)
+- Checkpoint management (CRITICAL - see [LESSONS_LEARNED.md](docs/LESSONS_LEARNED.md))
 - Memory optimization strategies
 
 #### 04. Monitoring (Daily checks)
-**docs/04-monitoring.md**
+**[docs/04-monitoring.md](docs/04-monitoring.md)**
 - SageMaker Console monitoring
 - CloudWatch Logs analysis
 - GPU/CPU metrics tracking
@@ -51,7 +51,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - Performance benchmarks
 
 #### 05. Deployment (1-2 days)
-**docs/05-deployment.md**
+**[docs/05-deployment.md](docs/05-deployment.md)**
 - Downloading trained model
 - Local deployment with Ollama
 - Model conversion (PyTorch → GGUF)
