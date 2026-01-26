@@ -100,7 +100,7 @@ igbo-llm-training/
 │   ├── 04-monitoring.md                # Monitoring and troubleshooting
 │   └── 05-deployment.md                # Model deployment options
 ├── scripts/
-│   ├── train_igbo_model.py             # SageMaker training script
+│   ├── train_igbo_model_FIXED.py             # SageMaker training script
 │   ├── igbo-train.ipynb                # Jupyter notebook for launching training
 │   ├── prepare_nllb_training.py        # Prepare training data (reference)
 │   └── (other utility scripts)
