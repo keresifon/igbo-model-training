@@ -359,6 +359,7 @@ training_args = TrainingArguments(
     save_total_limit=None,  # CRITICAL: Don't delete old checkpoints!
     # Checkpoints will upload to S3 when training completes
 )
+```
 Prevention:
 
 Use save_total_limit=None to preserve all checkpoints
