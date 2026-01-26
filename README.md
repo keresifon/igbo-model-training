@@ -240,10 +240,21 @@ This project uses the following AWS services:
 | **IAM** | Access control and permissions | SageMaker execution role with S3 access |
 | **Service Quotas** | Resource limits management | ml.g5.xlarge quota request required |
 
-**Cost Optimization:**
-- Uses spot instances (70% cost savings)
-- Efficient LoRA training (only 0.12% parameters trainable)
-- Total training cost: ~$70-80 for 6-7 days
+## 💰 Cost Breakdown
+
+### Actual Production Costs
+| Item | Cost | Notes |
+|------|------|-------|
+| SageMaker Training (on-demand) | $237 | 168 hours × $1.41/hour |
+| S3 Storage (5GB) | $0.50/month | Data + checkpoints |
+| Data Transfer | $0.10 | One-time upload |
+| Service Quotas Extension | $0 | Free, 24hr approval |
+| **Total First Run** | **~$238** | Guaranteed completion |
+
+### Cost Considerations
+- **Spot Instances:** 70% cheaper ($63-76 for 7 days) BUT risk interruptions
+- **On-Demand:** Higher cost BUT guaranteed 7-day completion
+- **Recommendation:** Use on-demand for jobs >3 days to avoid restarts
 
 For detailed AWS setup instructions, see [docs/01-setup.md](docs/01-setup.md).
 
