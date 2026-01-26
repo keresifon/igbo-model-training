@@ -15,13 +15,16 @@ This project fine-tunes Mistral 7B on 6.1 million Igbo-English sentence pairs us
 - Run locally on consumer hardware (16GB RAM)
 - Be integrated into mobile applications
 
-**Training Stats:**
+**Production Training Results:**
 - Dataset: NLLB (No Language Left Behind) - 6.1M sentence pairs
-- Training Examples: 19.5M (4 formats per pair)
+- Training Examples: 19.5M (bidirectional augmentation)
 - Model: Mistral-7B-v0.1 with LoRA adapters
-- Training Time: ~150-180 hours (6-7 days)
-- Cost: ~$70-80 (with spot instances)
-- Hardware: AWS ml.g5.xlarge (NVIDIA A10G GPU)
+  - Trainable Parameters: 6.8M (0.094% of full model)
+- Training Time: 168 hours (7 days continuous)
+- Cost: $237 (on-demand instances for guaranteed completion)
+- Hardware: AWS ml.g5.xlarge (NVIDIA A10G GPU, 24GB VRAM)
+- GPU Utilization: 90-95% maintained throughout
+- Throughput: 11.56 iterations/second
 
 ## 🎯 Project Goals
 
@@ -29,6 +32,49 @@ This project fine-tunes Mistral 7B on 6.1 million Igbo-English sentence pairs us
 - Enable Igbo language learning for children
 - Provide offline translation capabilities
 - Support mobile app integration for OCR and translation
+
+## 📊 Project Status
+
+**Current Status:** ✅ Production training completed (January 2026)
+
+### Latest Training Run
+- **Job Name:** igbo-nllb-fixed-2026-01-24
+- **Duration:** 168 hours (completed January 31, 2026)
+- **Status:** Successfully executed with lessons learned
+- **Checkpoints:** ~30 checkpoints saved (every 5000 steps)
+- **Cost:** $237
+
+### What This Repository Demonstrates
+This project represents complete production-scale ML engineering experience:
+- ✅ End-to-end AWS SageMaker pipeline (5 AWS services)
+- ✅ 168-hour continuous training execution
+- ✅ Real-world cost-reliability tradeoffs
+- ✅ Production troubleshooting and recovery
+- ✅ Infrastructure capacity planning (Service Quotas management)
+- ✅ Defensive checkpoint strategies
+- ✅ Complete documentation and knowledge transfer
+
+### Key Production Learnings
+
+**1. Cost vs Reliability Decision**
+- Initial attempt: Spot instances ($0.42/hr, 70% savings)
+- Challenge: Capacity interruptions after 41 hours
+- Decision: Switched to on-demand ($1.41/hr)
+- **Learning:** For 7-day jobs, reliability > cost optimization
+
+**2. Checkpoint Configuration (Critical)**
+- First run: Completed 168 hours but only preserved initial checkpoint
+- Root cause: Checkpoint save location vs S3 sync mismatch
+- Impact: Lost 168 hours of training progress
+- Solution: Implemented validation callbacks + proper sync configuration
+- **Learning:** Checkpoint strategies must be validated EARLY
+- Full analysis: See `docs/LESSONS_LEARNED.md`
+
+**3. Infrastructure Planning**
+- Proactively requested AWS Service Quotas extension (5→7 days)
+- Approved within 24 hours
+- **Learning:** Advance capacity planning prevents delays
+
 
 ## ⭐ Featured Files
 
@@ -169,6 +215,16 @@ max_length = 512 tokens
 # Hardware
 instance_type = ml.g5.xlarge
 gpu = NVIDIA A10G (24GB VRAM)
+
+# CRITICAL: Checkpoint Configuration
+save_strategy = "steps"
+save_steps = 5000  # Save every 5000 steps
+save_total_limit = None  # IMPORTANT: Keep all checkpoints!
+
+# Output Configuration
+output_dir = "/opt/ml/output/data"  # Auto-uploads to S3 at completion
+# Note: checkpoint_s3_uri may not work reliably with HuggingFace estimator
+# Checkpoints in output_dir will upload when training completes
 
 ```
 
