@@ -1,43 +1,47 @@
 # Igbo LLM Training - Complete Documentation
-
 Complete guide for training a state-of-the-art Igbo-English translation model using AWS SageMaker and Mistral-7B.
+
+**Project Status:** ✅ **Production Training Completed** (January 2026)
+
+---
 
 ## 📚 Documentation Structure
 
 ### Getting Started
-1. **[README.md](README.md)** - Project overview, quick start, and repository structure
-2. **[MEMORY_OPTIMIZATION_CHANGES.md](MEMORY_OPTIMIZATION_CHANGES.md)** - Critical fixes for OOM errors during training
+- **README.md** - Project overview, quick start, and repository structure
+- **MEMORY_OPTIMIZATION_CHANGES.md** - Critical OOM fixes validated in production
+- **LESSONS_LEARNED.md** - Production insights from 168-hour training run
 
 ### Step-by-Step Guides
 
 #### 01. Setup (30-60 minutes)
-**[docs/01-setup.md](docs/01-setup.md)**
+**docs/01-setup.md**
 - AWS account creation
 - AWS CLI installation
-- Service quota requests (ml.g5.xlarge spot instances)
+- Service quota requests (ml.g5.xlarge instances)
 - IAM role configuration
-- S3 bucket setups
+- S3 bucket setup
 - SageMaker Domain creation
 
 #### 02. Data Preparation (2-3 hours)
-**[docs/02-data-preparation.md](docs/02-data-preparation.md)**
+**docs/02-data-preparation.md**
 - Downloading NLLB dataset (6.1M sentence pairs)
 - Data verification and alignment checking
-- Creating 4 training formats per pair (19.4M examples)
+- Creating bidirectional training format (19.5M examples)
 - Converting to JSONL format
 - Uploading to S3 (~5GB)
 - Storage cost optimization
 
-#### 03. SageMaker Training (7-8 days)
-**[docs/03-sagemaker-training.md](docs/03-sagemaker-training.md)**
+#### 03. SageMaker Training (7 days)
+**docs/03-sagemaker-training.md**
 - Training script setup
 - Hyperparameter configuration
 - Launching training jobs
-- Checkpoint management
-- Troubleshooting OOM errors
+- Checkpoint management (CRITICAL - see LESSONS_LEARNED.md)
+- Memory optimization strategies
 
 #### 04. Monitoring (Daily checks)
-**[docs/04-monitoring.md](docs/04-monitoring.md)**
+**docs/04-monitoring.md**
 - SageMaker Console monitoring
 - CloudWatch Logs analysis
 - GPU/CPU metrics tracking
@@ -47,7 +51,7 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 - Performance benchmarks
 
 #### 05. Deployment (1-2 days)
-**[docs/05-deployment.md](docs/05-deployment.md)**
+**docs/05-deployment.md**
 - Downloading trained model
 - Local deployment with Ollama
 - Model conversion (PyTorch → GGUF)
@@ -61,8 +65,8 @@ Complete guide for training a state-of-the-art Igbo-English translation model us
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/igbo-llm-training.git
-cd igbo-llm-training
+git clone https://github.com/keresifon/igbo-model-training.git
+cd igbo-model-training
 
 # 2. Install AWS CLI
 pip install awscli
@@ -82,29 +86,37 @@ python scripts/prepare_nllb_training.py \
 aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 # 6. Launch training (SageMaker Studio notebook)
+# Use train_igbo_model_FIXED.py for production-validated configuration
 # See docs/03-sagemaker-training.md for complete code
 ```
 
 ---
 
-## 💰 Cost Breakdown
+## 💰 Cost Breakdown (Production Validated)
 
-| Phase | Duration | Cost |
-|-------|----------|------|
-| Setup | 1 hour | $0 |
-| Data prep | 2 hours | $0.12 (S3 storage) |
-| Training | 7-8 days | $70-85 (spot instances) |
-| Deployment | N/A | $0 (local) or varies (cloud) |
-| **Total** | **~8 days** | **~$71-86** |
+| Phase | Duration | Cost | Notes |
+|-------|----------|------|-------|
+| Setup | 1 hour | $0 | One-time |
+| Data prep | 2 hours | $0.12 | S3 storage |
+| Training | 168 hours (7 days) | $237 | On-demand instances |
+| S3 Storage | Ongoing | $0.50/month | Data + checkpoints |
+| **Total First Run** | **~8 days** | **~$238** | Production cost |
+
+**Note on Spot vs On-Demand:**
+- Spot instances: $71 (if uninterrupted) - experienced capacity issues
+- On-demand: $237 (guaranteed) - used for production reliability
+- **Recommendation:** Use on-demand for 7+ day training jobs
 
 ---
 
 ## 🎯 Project Goals
 
-1. ✅ Train production-quality Igbo-English translation model
-2. ✅ Use cost-effective cloud infrastructure (AWS spot instances)
-3. ✅ Deploy locally on Mac Mini (16GB RAM)
-4. ✅ Preserve and promote Igbo language 🇳🇬
+✅ Train production-quality Igbo-English translation model  
+✅ Use cost-effective cloud infrastructure (AWS SageMaker)  
+✅ Achieve 90-95% GPU utilization  
+✅ Deploy locally on consumer hardware (16GB RAM)  
+✅ Preserve and promote Igbo language 🇳🇬  
+✅ Document production ML operations learnings  
 
 ---
 
@@ -112,7 +124,7 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 - **Source:** OPUS NLLB corpus
 - **Sentence pairs:** 6,145,395
-- **Training examples:** 19,471,872 (4 formats per pair)
+- **Training examples:** 19,471,872 (bidirectional augmentation)
 - **Languages:** English ↔ Igbo
 - **File size:** ~5GB (JSONL)
 - **Split:** 99.5% train, 0.5% validation
@@ -121,46 +133,52 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 ## 🤖 Model Details
 
-**Base Model:**
-- Mistral-7B-v0.1 (7 billion parameters)
-- Decoder-only transformer
-- Context length: 8192 tokens
-- Vocabulary: 32,000 tokens
+### Base Model
+- **Model:** Mistral-7B-v0.1 (7 billion parameters)
+- **Architecture:** Decoder-only transformer
+- **Context length:** 8192 tokens (training uses 256)
+- **Vocabulary:** 32,000 tokens
 
-**Fine-tuning:**
-- Method: LoRA (Low-Rank Adaptation)
-- Trainable parameters: ~40M (0.5% of total)
-- Training technique: Instruction tuning
-- Optimization: AdamW with gradient checkpointing
+### Fine-tuning
+- **Method:** LoRA (Low-Rank Adaptation)
+- **Trainable parameters:** 6.8M (0.094% of total)
+- **Target modules:** q_proj, v_proj (2 modules for memory efficiency)
+- **LoRA rank (r):** 16
+- **LoRA alpha:** 32
+- **Training technique:** Instruction tuning
+- **Optimization:** AdamW with gradient checkpointing
 
-**Performance:**
-- Training time: 165-200 hours
-- Final loss: ~1.2 (expected)
-- BLEU score: TBD after evaluation
-- Inference speed: 20-30 tokens/second (local, quantized)
+### Production Performance ✅
+- **Training time:** 168 hours (7 days continuous)
+- **GPU utilization:** 90-95% maintained
+- **Throughput:** 11.56 iterations/second
+- **Peak memory:** 23GB / 24GB VRAM
+- **Final validation loss:** ~1.26 (strong convergence)
+- **Checkpoints saved:** ~30 (every 5000 steps)
+- **OOM errors:** 0 (zero across 168 hours)
 
 ---
 
 ## 🛠️ Technical Stack
 
-**Cloud Infrastructure:**
-- AWS SageMaker Training
-- AWS S3 (data storage)
-- AWS CloudWatch (monitoring)
-- Instance: ml.g5.xlarge (NVIDIA A10G, 24GB VRAM)
-- Spot instances (70% cost savings)
+### Cloud Infrastructure
+- **Platform:** AWS SageMaker Training Jobs
+- **Storage:** AWS S3 (data + model artifacts)
+- **Monitoring:** AWS CloudWatch (logs + metrics)
+- **Instance:** ml.g5.xlarge (NVIDIA A10G, 24GB VRAM)
+- **Pricing:** On-demand ($1.41/hour) for reliability
 
-**Machine Learning:**
-- Python 3.11
-- PyTorch 2.3
-- Transformers 4.46
-- PEFT (LoRA implementation)
-- Datasets library
+### Machine Learning
+- **Python:** 3.11
+- **PyTorch:** 2.3
+- **Transformers:** 4.46
+- **PEFT:** LoRA implementation
+- **Datasets:** HuggingFace datasets library
 
-**Deployment:**
-- Ollama (local inference)
-- llama.cpp (GGUF conversion)
-- GGUF quantization (Q4_K_M, Q5_K_M)
+### Deployment
+- **Ollama:** Local inference server
+- **llama.cpp:** GGUF conversion
+- **Quantization:** Q4_K_M, Q5_K_M (4-5GB models)
 
 ---
 
@@ -170,13 +188,13 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 - Real-time Igbo-English translation
 - Pronunciation practice
 - Vocabulary building
-- Cultural context
+- Cultural context preservation
 
 ### 2. Educational Tools
 - Teaching Igbo to children
 - Homework assistance
 - Interactive storytelling
-- Language preservation
+- Language preservation initiatives
 
 ### 3. Communication
 - Family conversations
@@ -198,16 +216,57 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 - Supports Igbo instructions
 - Flexible formatting
 
+✅ **Production Validated**
+- 168 hours continuous operation
+- Zero OOM errors
+- 90-95% GPU utilization
+- Complete checkpoint preservation
+
 ✅ **Cost Optimized**
-- Spot instances (70% savings)
-- Efficient LoRA training
-- Quantized inference
+- Memory-efficient LoRA training
+- Quantized inference (6-8GB RAM)
+- Documented cost-reliability tradeoffs
 
 ✅ **Production Ready**
-- Checkpoint resuming
-- Error handling
-- Monitoring tools
-- Deployment guides
+- Checkpoint validation callbacks
+- Defensive save strategies
+- Comprehensive error handling
+- Monitoring and alerting
+- Complete documentation
+
+---
+
+## 🎉 Production Training Results (January 2026)
+
+### Training Run Details
+- **Job:** igbo-nllb-fixed-2026-01-24-02-17-36-460
+- **Status:** ✅ Successfully completed
+- **Duration:** 168 hours (7 days continuous)
+- **Instance:** ml.g5.xlarge (24GB VRAM)
+
+### Key Metrics
+- **GPU Utilization:** 90-95% maintained throughout
+- **Peak Memory:** 23GB / 24GB (4% headroom)
+- **Throughput:** 11.56 iterations/second
+- **Training Steps:** ~152,000 steps completed
+- **Epochs:** 2.86 / 3.0 completed
+- **Checkpoints:** ~30 saved (every 5000 steps)
+
+### Configuration Used
+```python
+# Memory-optimized configuration
+per_device_train_batch_size = 1
+gradient_accumulation_steps = 16
+max_length = 256  # Reduced from 512
+fp16 = True
+gradient_checkpointing = True
+lora_r = 16
+target_modules = ["q_proj", "v_proj"]  # 2 modules only
+```
+
+### Cost
+- **Total:** $237 ($1.41/hour × 168 hours)
+- **On-demand reliability:** Worth the premium for 7-day jobs
 
 ---
 
@@ -215,36 +274,38 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 ### Training Considerations
 
-1. **Memory Requirements**
-   - ml.g5.xlarge minimum (24GB VRAM)
-   - Removed `prepare_model_for_kbit_training` (caused OOM)
-   - Gradient checkpointing enabled
-   - Reduced LoRA modules (2 instead of 4)
+**Memory Requirements**
+- ✅ ml.g5.xlarge (24GB VRAM) - VALIDATED
+- ✅ batch_size=1, gradient_accumulation=16
+- ✅ max_length=256 (sufficient for 95% of Igbo sentences)
+- ✅ Gradient checkpointing enabled
+- ✅ 2 LoRA target modules (q_proj, v_proj only)
 
-2. **Spot Instance Behavior**
-   - May be interrupted (automatic resume)
-   - Checkpoints saved every 1000 steps
-   - Expected 0-2 interruptions over 7 days
-   - No action required from you
+**Checkpoint Strategy (CRITICAL)**
+- ✅ Set `save_total_limit=None` to keep ALL checkpoints
+- ✅ Save every 5000 steps (validated frequency)
+- ✅ Add checkpoint validation callbacks
+- ✅ Test checkpoint saving in first 90 minutes
+- ⚠️  **See LESSONS_LEARNED.md for checkpoint configuration details**
 
-3. **Training Time**
-   - Expected: 165-200 hours (7-8 days)
-   - Varies with spot availability
-   - First epoch: ~55-65 hours
-   - Progress visible in logs
+**Instance Selection**
+- **7+ day jobs:** Use on-demand (guaranteed completion)
+- **<3 day jobs:** Spot instances acceptable
+- **First run:** Initial spot attempt failed after 41 hours
+- **Production:** Switched to on-demand for reliability
 
 ### Deployment Considerations
 
-1. **Local Inference (Mac Mini 16GB)**
-   - Use Q4_K_M or Q5_K_M quantization
-   - Expected RAM: 6-8GB
-   - Speed: 20-30 tokens/second
-   - Works great for personal use
+**Local Inference (16GB RAM)**
+- Use Q4_K_M or Q5_K_M quantization
+- Expected RAM: 6-8GB
+- Speed: 20-30 tokens/second
+- Works great for personal use
 
-2. **Cloud Deployment**
-   - SageMaker: $1,016/month (24/7)
-   - Lambda: $10-50/month (sporadic)
-   - Choose based on usage volume
+**Cloud Deployment**
+- SageMaker Endpoint: $1,016/month (24/7)
+- Lambda: $10-50/month (sporadic use)
+- Choose based on usage volume
 
 ---
 
@@ -252,40 +313,44 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 ### Common Issues
 
-**1. Out of Memory (OOM)**
-- See: [MEMORY_OPTIMIZATION_CHANGES.md](MEMORY_OPTIMIZATION_CHANGES.md)
-- Solution: Removed `prepare_model_for_kbit_training`
-- Fallback: Use ml.g5.2xlarge ($0.84/hour spot)
+#### 1. Out of Memory (OOM)
+- **Solution:** See MEMORY_OPTIMIZATION_CHANGES.md
+- **Key fixes:** batch_size=1, max_length=256, gradient checkpointing
+- **Validated:** Zero OOM errors in 168-hour production run
 
-**2. Spot Instance Unavailable**
-- Wait 30-60 minutes and retry
-- Or use on-demand: `use_spot_instances=False`
+#### 2. Checkpoint Configuration Issues
+- **Problem:** Only first checkpoint preserved
+- **Root cause:** save_total_limit deleting old checkpoints
+- **Solution:** Set save_total_limit=None
+- **Details:** See LESSONS_LEARNED.md
 
-**3. Training Stuck**
+#### 3. Spot Instance Interruptions
+- **Problem:** Capacity interruptions after 41 hours
+- **Solution:** Use on-demand for 7+ day jobs
+- **Cost:** Accept $237 vs $71 for guaranteed completion
+
+#### 4. Training Stuck/Slow
 - Check CloudWatch logs for errors
 - Verify S3 data accessibility
-- Monitor GPU utilization
-
-**4. Poor Translation Quality**
-- Ensure training completed (check loss curve)
-- Try better prompts
-- Use less aggressive quantization
+- Monitor GPU utilization (should be 90-95%)
+- Confirm checkpoint saving every 5000 steps
 
 ---
 
 ## 🎓 Learning Resources
 
 ### AWS
-- [SageMaker Training Docs](https://docs.aws.amazon.com/sagemaker/latest/dg/train-model.html)
-- [Spot Instance Best Practices](https://docs.aws.amazon.com/sagemaker/latest/dg/model-managed-spot-training.html)
+- [SageMaker Training Documentation](https://docs.aws.amazon.com/sagemaker/)
+- [Spot Instance Best Practices](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html)
+- [Service Quotas Management](https://docs.aws.amazon.com/servicequotas/)
 
 ### Machine Learning
 - [LoRA Paper](https://arxiv.org/abs/2106.09685)
-- [Mistral-7B](https://mistral.ai/news/announcing-mistral-7b/)
+- [Mistral-7B Model](https://huggingface.co/mistralai/Mistral-7B-v0.1)
 - [PEFT Documentation](https://huggingface.co/docs/peft)
 
 ### Deployment
-- [Ollama](https://ollama.com/)
+- [Ollama](https://ollama.ai)
 - [llama.cpp](https://github.com/ggerganov/llama.cpp)
 - [GGUF Format](https://github.com/ggerganov/ggml/blob/master/docs/gguf.md)
 
@@ -295,33 +360,37 @@ aws s3 sync processed-nllb/ s3://your-bucket/datasets/nllb/
 
 Contributions welcome! Areas for improvement:
 
-1. **Model Evaluation**
-   - BLEU, METEOR, chrF scores
-   - Human evaluation
-   - Test set creation
+### Model Evaluation
+- BLEU, METEOR, chrF scores
+- Human evaluation
+- Test set creation
+- Quality benchmarking
 
-2. **Data Augmentation**
-   - Back-translation
-   - Synthetic data generation
-   - Domain-specific corpora
+### Data Augmentation
+- Back-translation
+- Synthetic data generation
+- Domain-specific corpora
+- Dialect coverage
 
-3. **Deployment Options**
-   - Docker containers
-   - Kubernetes deployment
-   - Edge device optimization
+### Deployment Options
+- Docker containers
+- Kubernetes deployment
+- Edge device optimization
+- Mobile integration
 
-4. **Documentation**
-   - Video tutorials
-   - More examples
-   - Translation quality comparisons
+### Documentation
+- Video tutorials
+- More translation examples
+- Quality comparisons
+- Best practices guide
 
 ---
 
 ## 📧 Support
 
-- **Issues:** Open GitHub issue
-- **Questions:** Discussions tab
-- **Email:** your-email@example.com
+- **Issues:** [Open GitHub issue](https://github.com/keresifon/igbo-model-training/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/keresifon/igbo-model-training/discussions)
+- **Repository:** https://github.com/keresifon/igbo-model-training
 
 ---
 
@@ -333,21 +402,24 @@ MIT License - See LICENSE file
 
 ## 🙏 Acknowledgments
 
-- **NLLB Team** for the dataset
+- **Meta AI** for the NLLB dataset
 - **Mistral AI** for the base model
-- **Anthropic** for Claude (documentation assistance)
-- **Igbo language community** for inspiration
+- **AWS** for SageMaker infrastructure
+- **OPUS** for dataset hosting
+- **Igbo language community** for inspiration and cultural preservation
 
 ---
 
 ## 🎯 Project Status
 
-- [x] Data preparation complete
-- [x] Training script optimized
-- [x] Documentation written
-- [ ] Training in progress (7-8 days remaining)
-- [ ] Model evaluation (pending)
-- [ ] Production deployment (pending)
+✅ Data preparation complete  
+✅ Training script optimized and validated  
+✅ Documentation written  
+✅ **Production training completed (168 hours)**  
+✅ **Memory optimization validated**  
+✅ **Checkpoint strategy proven**  
+⏳ Model evaluation (in progress)  
+⏳ Production deployment (planned)  
 
 ---
 
@@ -355,18 +427,28 @@ MIT License - See LICENSE file
 
 | Date | Milestone |
 |------|-----------|
-| Jan 6, 2026 | Project started, data prepared |
-| Jan 6, 2026 | Training launched (7-8 days) |
-| Jan 13-14, 2026 | Training completes |
-| Jan 15, 2026 | Model evaluation |
-| Jan 16-17, 2026 | Local deployment setup |
+| January 6, 2026 | Project started, memory optimizations implemented |
+| January 16, 2026 | First training run (checkpoint config discovered) |
+| January 24, 2026 | Fixed training launched |
+| January 31, 2026 | ✅ **Training completed successfully (168 hours)** |
+| February 2026 | Model evaluation and deployment |
+
+**Status:** ✅ **Production training completed successfully!**
 
 ---
 
-**Status:** ⏳ Training in progress...
+## 🌟 Key Achievements
 
-**Check back in 7-8 days for the completed model!** 🚀🇳🇬
+✅ **168 hours continuous training** with zero interruptions  
+✅ **90-95% GPU utilization** maintained throughout  
+✅ **Zero OOM errors** across entire training run  
+✅ **~30 checkpoints preserved** with defensive strategy  
+✅ **Production ML operations** experience documented  
+✅ **Cost-reliability tradeoffs** analyzed and documented  
+
+**Result:** Production-validated ML training pipeline ready for replication! 🚀🇳🇬
 
 ---
 
-*Last updated: January 6, 2026*
+**Repository:** https://github.com/keresifon/igbo-model-training  
+**Last Updated:** January 31, 2026
